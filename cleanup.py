@@ -1,11 +1,37 @@
 
 import os
+import shutil
 import re as regex
 
-ls = os.popen('ls ~/Desktop').read()
+desktopDirectory = os.path.join(os.environ.get('HOME'), 'Desktop')
 
-regexFileExtensions = regex.compile(r"(\.\w{3,}$[^\d#~])", regex.MULTILINE)
+os.chdir(desktopDirectory)
 
-items = regexFileExtensions.findall(ls)
+desktopContents = os.listdir()
 
-itemSet = set(items)
+extArray = []
+
+# Finding extension(s)
+for file in desktopContents:
+    ext = os.path.splitext(file)[1]
+    if os.path.isfile(file) == True:
+        if ext not in extArray:
+            extArray.append(ext)
+
+
+# Make folder for extension(s)
+for extension in extArray:
+    extension = extension.replace('.', '')
+    os.makedirs(os.path.join(desktopDirectory, extension), exist_ok=True)
+    for file in desktopContents:
+        if os.path.isfile(file) == True:
+            if extension in file:
+                if not os.path.exists(desktopDirectory):
+                    shutil.move(os.path.join(desktopDirectory, file),
+                                os.path.join(desktopDirectory, extension))
+
+
+# ls = os.popen('ls ~/Desktop').read()
+# regexFileExtensions = regex.compile(r"(\.\w{1,}$[^\d#~])", regex.MULTILINE)
+# items = regexFileExtensions.findall(ls)
+# itemSet = set(items)
