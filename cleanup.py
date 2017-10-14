@@ -15,8 +15,9 @@ extArray = []
 for file in desktopContents:
     ext = os.path.splitext(file)[1]
     if os.path.isfile(file) == True:
-        if ext not in extArray:
-            extArray.append(ext)
+        if not file.startswith('.'):
+            if ext not in extArray:
+                extArray.append(ext)
 
 
 # Make folder for extension(s)
@@ -26,7 +27,7 @@ for extension in extArray:
     for file in desktopContents:
         if os.path.isfile(file) == True:
             if extension in file:
-                if not os.path.exists(desktopDirectory):
+                if os.path.exists(desktopDirectory):
                     shutil.move(os.path.join(desktopDirectory, file),
                                 os.path.join(desktopDirectory, extension))
 
