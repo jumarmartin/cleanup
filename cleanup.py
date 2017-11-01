@@ -1,8 +1,12 @@
 """Imports os for os operations, shutil to move files"""
+import sys
 import os
 import shutil
 
-DESKTOPDIRECTORY = os.path.join(os.environ.get('HOME'), 'Desktop')
+if sys.platform == 'win32':
+    DESKTOPDIRECTORY = os.path.join(os.environ.get('USERPROFILE', 'Desktop'))
+else:
+    DESKTOPDIRECTORY = os.path.join(os.environ.get('HOME'), 'Desktop')
 
 
 def cleanup():
@@ -21,6 +25,7 @@ def cleanup():
             if os.path.isfile(file):
                 if extension in file:
                     if os.path.exists(DESKTOPDIRECTORY):
+                        # extension = extension.replace('.', '')
                         shutil.move(
                             os.path.join(DESKTOPDIRECTORY, file),
                             os.path.join(DESKTOPDIRECTORY, extension))
@@ -31,6 +36,10 @@ def findextensions(desktopcontents, extarray):
     for file in desktopcontents:
         ext = os.path.splitext(file)[1]
         if os.path.isfile(file):
+            if sys.platform == 'win32':
+                if '.lnk' not in file:
+                    if ext not in extarray:
+                        extarray.append(ext)
             if not file.startswith('.'):
                 if ext not in extarray:
                     extarray.append(ext)
