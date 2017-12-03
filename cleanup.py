@@ -1,7 +1,12 @@
+#!/usr/bin/python3
+
+# cleanup.py - cleans up (at least in this revision) your desktop by filetype.
 """Imports os for os operations, shutil to move files"""
 import sys
 import os
 import shutil
+
+RUNNING = True
 
 if sys.platform == 'win32':
     DESKTOPDIRECTORY = os.path.join(os.environ.get('USERPROFILE', 'Desktop'))
@@ -45,7 +50,19 @@ def findextensions(desktopcontents, extarray):
                     extarray.append(ext)
 
 
-cleanup()
+while RUNNING:
+    print("Cleaning!")
+    try:
+        cleanup()
+    except EnvironmentError as error:
+        print("We\'ve ran into an error!")
+        print(error)
+        print("Cleaning done, but with errors. Please see above.")
+    else:
+        print("Cleaning Done!")
+    # Changing a global 'constant'!? Find a better way.
+    RUNNING = False
+
 # ls = os.popen('ls ~/Desktop').read()
 # regexFileExtensions = regex.compile(r"(\.\w{1,}$[^\d#~])", regex.MULTILINE)
 # items = regexFileExtensions.findall(ls)
